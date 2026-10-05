@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-head">
+    <div>
+        <div class="pill">🏆 My Journey</div>
+        <h1>Progress</h1>
+        <p>Every small step counts!</p>
+    </div>
+</div>
+
+<div class="content-card">
+
+    <h2>📚 Lessons</h2>
+
+    {% if lessons %}
+        {% for x in lessons %}
+            <div class="progress-row">
+                <span>{{ x.title }}</span>
+                <b>✅ Completed</b>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No lessons completed yet. Start learning!</p>
+    {% endif %}
+
+    <h2 class="section-title">🧠 Quiz Attempts</h2>
+
+    {% if quizzes %}
+        {% for x in quizzes %}
+            <div class="progress-row">
+                <span>{{ x.attempted_at }}</span>
+                <b>{{ x.score }}/{{ x.total_questions * 10 }} points</b>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No quiz attempts yet.</p>
+    {% endif %}
+
+    <a href="{{ url_for('dashboard') }}">
+        🏠 Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-wrap"><div class="auth-card">
+<div class="big-icon">👋</div><h2>Join CodeBuddy</h2><p>Create your free student account.</p>
+<form method="POST">
+<input name="name" placeholder="Your name" required>
+<input name="email" type="email" placeholder="Email address" required>
+<input name="password" type="password" placeholder="Create password" required>
+<button class="btn primary full">Create Account 🎉</button>
+</form>
+<p>Already registered? <a href="{{ url_for('login') }}">Login</a></p>
+</div></div>
+{% endblock %}

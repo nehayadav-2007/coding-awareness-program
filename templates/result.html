@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="result-card">
+<div class="big-icon">🎉</div><h1>Great Job!</h1>
+<p>Your quiz score is</p><div class="score">{{ score }}/{{ total }}</div>
+<p>Keep practicing and become a coding superstar! ⭐</p>
+<div class="actions center"><a class="btn primary" href="{{ url_for('quiz') }}">Try Again</a><a class="btn secondary" href="{{ url_for('dashboard') }}">Dashboard</a></div>
+</div>
+{% endblock %}

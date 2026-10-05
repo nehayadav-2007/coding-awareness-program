@@ -1,0 +1,207 @@
+:root{--blue:#4f7cff;--purple:#8b5cf6;--yellow:#ffca3a;--green:#35c98b;--ink:#25304a;--muted:#69738b;--bg:#f7f9ff}
+
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:Poppins,sans-serif}a{text-decoration:none;color:inherit}
+
+.navbar{height:72px;background:#fff;display:flex;align-items:center;
+    justify-content:space-between;padding:0 7%;box-shadow:0 2px 14px #27365d12;
+    position:sticky;top:0;z-index:5}.brand{font:700 27px "Baloo 2";
+        color:var(--blue)}.brand span{font-size:30px}.navlinks{display:flex;
+            gap:24px;align-items:center;font-size:14px}.navlinks a:hover{color:var(--blue)}.signup,.logout{padding:10px 17px;border-radius:12px}.signup{background:var(--blue);
+                color:white}.logout{background:#eef1f8}
+
+main{min-height:calc(100vh - 125px)}.hero{max-width:1120px;margin:60px auto 40px;
+    padding:40px 5%;display:grid;grid-template-columns:1.5fr 1fr;
+    gap:45px;align-items:center}.pill{display:inline-block;background:#eaf0ff;
+        color:var(--blue);font-weight:600;padding:7px 13px;border-radius:30px;font-size:13px}.hero h1,.page-head h1{font:700 55px/1.05 "Baloo 2";
+            margin:18px 0}.hero h1 span{color:var(--purple)}.hero p{color:var(--muted);font-size:17px;line-height:1.8}.actions{display:flex;gap:12px;margin-top:25px}
+.btn{border:0;border-radius:14px;padding:13px 21px;font:600 15px Poppins;cursor:pointer;display:inline-block}
+.primary{background:var(--blue);color:white;box-shadow:0 8px 18px #4f7cff35}
+.secondary{background:white;border:1px solid #e2e6f0}.full{width:100%}
+.hero-card{background:white;border-radius:28px;padding:38px;text-align:center;box-shadow:0 15px 40px #25304a12}
+.mascot{font-size:90px}.hero-card h3{font:700 25px "Baloo 2"}
+.hero-card p{font-size:14px}.features,.stats,.dashboard-grid,.lesson-grid{max-width:1120px;margin:25px auto 60px;padding:0 5%;display:grid;gap:18px}
+.features{grid-template-columns:repeat(3,1fr)}
+.feature,.stat,.dash-card,.lesson-card,.content-card,.auth-card,.result-card{background:#fff;border-radius:22px;box-shadow:0 10px 30px #25304a0c}
+.feature{text-align:center;padding:27px}
+.feature div{font-size:42px}
+.feature h3{margin:8px 0}.feature p,.lesson-card p,.dash-card p{color:var(--muted);font-size:14px}
+.page-head{max-width:1120px;margin:45px auto 25px;padding:0 5%}
+.page-head h1{font-size:43px;margin:10px 0}
+.stats{grid-template-columns:repeat(3,1fr)}
+.stat{padding:20px;display:grid;grid-template-columns:55px 1fr;align-items:center}
+.stat span{font-size:34px;grid-row:span 2}
+.stat b{font-size:25px}
+.stat small{color:var(--muted)}
+.dashboard-grid{grid-template-columns:repeat(3,1fr)}
+.dash-card{padding:28px}
+.dash-card>span{font-size:43px}
+.dash-card h2{font:700 25px "Baloo 2";margin:5px 0}
+.dash-card b{font-size:14px}
+.blue{border-top:6px solid var(--blue)}
+.purple{border-top:6px solid var(--purple)}
+.yellow{border-top:6px solid var(--yellow)}
+.lesson-grid{grid-template-columns:1fr 1fr}
+.lesson-card{padding:24px;display:grid;grid-template-columns:65px 1fr;gap:15px;position:relative;transition:.2s}
+.lesson-card:hover{transform:translateY(-3px)}
+.lesson-icon{font-size:45px}
+.level{font-size:11px;background:#eef2ff;color:var(--blue);padding:4px 9px;border-radius:15px}
+.lesson-card h2{font:700 23px "Baloo 2";margin:8px 0 3px}
+.status{grid-column:2;color:var(--green);font-weight:600;font-size:13px}
+.content-card{max-width:850px;margin:45px auto;padding:35px}
+.lesson-detail>h1{font:700 43px "Baloo 2";margin:12px 0}
+.lesson-content{background:#f5f7ff;padding:20px;border-radius:16px;
+    margin:25px 0}
+.code-btn-container{max-width:850px;margin:45px auto;padding:35px}    
+.code-box{background:#20263a;color:#fff;border-radius:14px;padding:18px;margin-bottom:25px}
+.code-box span{color:#aab4ce;font-size:12px}
+.code-box pre{margin-bottom:0}
+
+
+.text-link{display:block;margin-top:20px;color:var(--blue);font-size:14px}
+.question{padding:20px 0;border-bottom:1px solid #e8ebf3}
+.question label{display:block;background:#f7f8fc;padding:12px;border-radius:10px;margin:8px 0;cursor:pointer}
+.question label:hover{background:#edf1ff}
+.auth-wrap{display:flex;justify-content:center;padding:70px 20px}
+.auth-card{width:410px;padding:35px;text-align:center}
+.big-icon{font-size:55px}
+.auth-card h2,.result-card h1{font:700 35px "Baloo 2";margin:5px}
+.auth-card p{color:var(--muted);font-size:13px}
+.auth-card input{width:100%;padding:13px;margin:7px 0;border:1px solid #dfe3ee;border-radius:11px;font:14px Poppins}
+.auth-card form{margin:20px 0}.auth-card a{color:var(--blue);font-weight:600}
+.result-card{max-width:600px;margin:80px auto;text-align:center;padding:45px}
+.score{font:700 70px "Baloo 2";color:var(--purple)}.center{justify-content:center}
+.progress-row{display:flex;justify-content:space-between;padding:15px;border-bottom:1px solid #edf0f5}.progress-row b{color:var(--green)}.section-title{margin-top:35px}
+.flash{max-width:850px;margin:15px auto 0;background:#fff2c7;padding:12px 18px;border-radius:10px;color:#7a5a00}footer{text-align:center;background:#fff;padding:24px;color:var(--muted);font-size:13px}
+
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:20px}
+.features,.dashboard-grid,.stats,.lesson-grid{grid-template-columns:1fr}
+.navlinks{gap:9px}.navbar{padding:0 4%}
+.navlinks a:nth-child(3){display:none}
+.hero h1{font-size:43px}}
+
+
+
+
+
+/* this is added for page responsiveness */
+
+
+
+/* Responsive adjustments only */
+@media (max-width: 800px) {
+    .content-card {
+        width: 90%;
+        margin: 30px auto;
+        padding: 25px;
+    }
+
+    .code-btn-container {
+        width: 90%;
+        margin: 25px auto;
+    }
+
+   
+
+    .lesson-detail > h1 {
+        font-size: 35px;
+    }
+
+    .navbar {
+        padding: 0 4%;
+    }
+
+    .navlinks {
+        gap: 8px;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        height: auto;
+        min-height: 72px;
+        padding: 12px 5%;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .brand {
+        font-size: 24px;
+    }
+
+    .navlinks {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .navlinks a {
+        font-size: 12px;
+    }
+
+    .hero {
+        margin: 25px auto;
+        padding: 25px 5%;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+    }
+
+    .page-head h1 {
+        font-size: 35px;
+    }
+
+    .content-card {
+        width: 92%;
+        padding: 22px;
+    }
+
+    .lesson-detail > h1 {
+        font-size: 32px;
+    }
+
+    .code-box {
+        width: 92%;
+        padding: 14px;
+        overflow-x: auto;
+    }
+
+    .code-box pre {
+        overflow-x: auto;
+        white-space: pre;
+        font-size: 13px;
+    }
+
+    .btn {
+        max-width: 100%;
+    }
+
+    footer {
+        padding: 20px 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .brand {
+        font-size: 21px;
+    }
+
+    .navlinks a {
+        font-size: 11px;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .content-card,
+    .code-box {
+        width: 94%;
+    }
+
+    .lesson-detail > h1 {
+        font-size: 28px;
+    }
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="en">
+    <head><meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>CodeBuddy Admin</title>
+<style>
+:root{--ink:#14213d;--acc:#5b4bdb;
+    --line:#e2e5ef;
+    --mute:#6b7390;
+    --bad:#d64545;
+    --amber:#f5a524}*
+{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;
+    background:#f6f7fb;color:#1a2138}
+    .w{display:grid;
+        grid-template-columns:220px 1fr;
+        min-height:100vh}
+aside{background:var(--ink);
+    padding:20px 12px}
+    aside a{display:block;
+        color:#c9d2ee;
+        text-decoration:none;
+        padding:9px 12px;border-radius:8px}
+        aside a:hover{background:#1f2f55}
+        aside a.on{background:var(--acc);color:#fff}
+.logo{color:#fff;
+    font-weight:700;font-size:20px;margin:0 0 16px 12px}
+    .logo span{color:var(--amber)}
+    main{padding:26px 30px;min-width:0}h2{margin-top:0}
+.p{background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px;
+    margin-bottom:18px;
+    overflow-x:auto}
+table{width:100%;
+    border-collapse:collapse;
+    font-size:14px}
+    th{text-align:left;
+        color:var(--mute);
+        padding:8px;
+        border-bottom:1px solid var(--line)}
+        td{padding:8px;
+            border-bottom:1px solid var(--line);
+            vertical-align:middle}
+input,select,textarea{padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font:inherit;width:100%}
+    label{display:block;
+        font-weight:500;
+        margin:10px 0 4px;
+        font-size:14px}
+
+textarea{min-height:90px;
+    font-family:Consolas,monospace}.r{display:flex;
+        gap:6px;
+        flex-wrap:wrap;
+        align-items:center}
+        .r form{display:inline-flex;
+            gap:6px}
+            .r input,.r select{width:auto}
+.b{background:var(--acc);
+    color:#fff;border:0;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    text-decoration:none;
+    font-size:14px;
+    display:inline-block}
+    .d{background:#fff;
+        color:var(--bad);
+        border:1px solid var(--line)}
+.s{display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;margin-bottom:18px}
+    .s div{background:#fff;
+        border:1px solid var(--line);
+        border-left:4px solid var(--amber);
+        border-radius:10px;
+        padding:14px}
+    .s b{font-size:28px;display:block}
+.f{background:#fdf0d5;
+    color:#7a5200;
+    padding:10px 14px;
+    border-radius:8px;
+    margin-bottom:14px}
+    .g{display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:12px}
+@media(max-width:760px){.w{grid-template-columns:1fr}.g{grid-template-columns:1fr}}
+</style></head><body><div class="w">
+<aside><div class="logo">Code<span>Buddy</span></div>{% for k, label, url in tabs %}<a href="{{ url }}" class="{{ 'on' if k == page }}">{{ label }}</a>{% endfor %}<br><a href="/dashboard">View website</a><a href="/logout">Log out ({{ me.name }})</a></aside>
+<main>{% for m in get_flashed_messages() %}<div class="f">{{ m }}</div>{% endfor %}<h2>{{ NAV[page][0] }}</h2>
+{% macro plansel(cur) %}<select name="plan_id">{% for p in plans %}<option value="{{ p.id }}" {{ 'selected' if p.id == cur }}>{{ p.name }}</option>{% endfor %}</select>{% endmacro %}
+{% macro rolesel(cur) %}<select name="role">{% for r in ROLENAME %}<option value="{{ r }}" {{ 'selected' if r == cur }}>{{ ROLENAME[r] }}</option>{% endfor %}</select>{% endmacro %}
+
+{% if page == 'dash' %}
+<div class="s"><div><b>{{ students }}</b>Students</div><div><b>{{ lessons }}</b>Lessons</div><div><b>{{ questions }}</b>Quiz questions</div><div><b>{{ attempts }}</b>Quiz attempts</div></div>
+<div class="g"><div class="p"><h3>Newest students</h3><table>{% for u in newest %}<tr><td>{{ u.name }}</td><td>{{ u.email }}</td></tr>{% else %}<tr><td>No students yet.</td></tr>{% endfor %}</table></div>
+<div class="p"><h3>By plan</h3><table><tr><th>Plan</th><th>Students</th><th>Lessons</th></tr>{% for b in by %}<tr><td>{{ b.name }}</td><td>{{ b.u }}</td><td>{{ b.l }}</td></tr>{% endfor %}</table></div></div>
+
+{% elif page in ('lessons', 'quiz') %}
+<div class="p"><h3>{{ 'Edit' if edit else 'Add new' }}</h3><form method="post" action="/admin/content/{{ table }}/save">{{ csrf() }}{% if edit %}<input type="hidden" name="id" value="{{ edit.id }}">{% endif %}
+{% for c in cols %}<label>{{ c.name.replace('_', ' ')|capitalize }}</label>
+{% if c.is_plan %}{{ plansel(edit.plan_id if edit else plans[0].id) }}{% elif c.textarea %}<textarea name="{{ c.name }}">{{ edit[c.name] if edit and edit[c.name] is not none }}</textarea>
+{% else %}<input name="{{ c.name }}" {{ 'type=number' if c.number }} value="{{ edit[c.name] if edit and edit[c.name] is not none }}">{% endif %}{% endfor %}<br>
+<button class="b">{{ 'Save changes' if edit else 'Add' }}</button>{% if edit %} <a href="/admin/content/{{ table }}">Cancel</a>{% endif %}</form></div>
+<div class="p"><table><tr>{% for c in show %}<th>{{ c.replace('_', ' ')|capitalize }}</th>{% endfor %}<th></th></tr>{% for r in rows %}<tr>
+{% for c in show %}<td>{{ (pmap.get(r[c]) if c == 'plan_id' else r[c])|string|truncate(60) }}</td>{% endfor %}
+<td class="r"><a class="b" href="/admin/content/{{ table }}?edit={{ r.id }}">Edit</a><form method="post" action="/admin/content/{{ table }}/{{ r.id }}/delete" onsubmit="return confirm('Delete this?')">{{ csrf() }}<button class="b d">Delete</button></form></td></tr>{% else %}<tr><td>Nothing here yet.</td></tr>{% endfor %}</table></div>
+
+{% elif page == 'users' %}
+<div class="p"><form method="get" class="r"><input name="s" value="{{ s }}" placeholder="Search name or email" style="width:260px"><button class="b">Search</button></form><br>
+<table><tr><th>Name</th><th>Email</th><th>Done</th><th>Points</th><th>Plan / ends</th><th>Status</th><th></th></tr>{% for u in rows %}<tr><td>{{ u.name }}</td><td>{{ u.email }}</td><td>{{ u.done }}/{{ total }}</td><td>{{ u.points }}</td>
+<td><form method="post" action="/admin/users/{{ u.id }}/update" class="r">{{ csrf() }}{{ plansel(u.plan_id) }}<input type="date" name="expires" value="{{ u.plan_expires or '' }}"><button class="b">Save</button></form></td><td>{{ u.status }}</td>
+<td class="r"><form method="post" action="/admin/users/{{ u.id }}/toggle">{{ csrf() }}<button class="b">{{ 'Block' if u.status == 'active' else 'Unblock' }}</button></form>
+<form method="post" action="/admin/users/{{ u.id }}/password">{{ csrf() }}<input name="password" type="password" placeholder="New password" style="width:130px"><button class="b">Reset</button></form>
+<form method="post" action="/admin/users/{{ u.id }}/delete" onsubmit="return confirm('Delete this student and their progress?')">{{ csrf() }}<button class="b d">Delete</button></form></td></tr>{% else %}<tr><td>No students found.</td></tr>{% endfor %}</table></div>
+
+{% elif page == 'admins' %}
+<div class="p"><h3>Add an admin</h3><form method="post" action="/admin/admins/add" class="r">{{ csrf() }}<input name="name" placeholder="Name"><input name="email" type="email" placeholder="Email (their login ID)" required><input name="password" type="password" placeholder="Password (6+)" required>{{ rolesel('support') }}<button class="b">Add admin</button></form>
+<p style="color:#6b7390">To make an existing student an admin, enter their email and use the SQL line in admin_setup.sql, or add a new account here.</p></div>
+<div class="p"><table><tr><th>Name</th><th>Email</th><th>Role</th><th>Reset password</th><th></th></tr>{% for a in rows %}<tr><td>{{ a.name }}{{ ' (you)' if a.id == me.id }}</td><td>{{ a.email }}</td>
+<td><form method="post" action="/admin/admins/role" class="r">{{ csrf() }}<input type="hidden" name="id" value="{{ a.id }}">{{ rolesel(a.role) }}<button class="b">Save</button></form></td>
+<td><form method="post" action="/admin/admins/password" class="r">{{ csrf() }}<input type="hidden" name="id" value="{{ a.id }}"><input name="password" type="password" placeholder="New password"><button class="b">Reset</button></form></td>
+<td>{% if a.id != me.id %}<form method="post" action="/admin/admins/demote" onsubmit="return confirm('Remove admin access? They become a student.')">{{ csrf() }}<input type="hidden" name="id" value="{{ a.id }}"><button class="b d">Remove admin</button></form>{% endif %}</td></tr>{% endfor %}</table></div>
+
+{% elif page == 'plans' %}
+<div class="p"><p style="margin-top:0">A student can open lessons that need their plan or a lower rank number. Rank 1 is the lowest plan. Set a lesson's plan on the Lessons page.</p>
+<table><tr><th>Name</th><th>Price</th><th>Rank</th><th></th></tr>{% for p in plans %}<tr>{% if can_edit %}<td colspan="4"><form method="post" action="/admin/plans/update" class="r">{{ csrf() }}<input type="hidden" name="id" value="{{ p.id }}"><input name="name" value="{{ p.name }}"><input name="price" type="number" min="0" value="{{ p.price }}"><input name="rank_no" type="number" min="1" value="{{ p.rank_no }}"><button class="b">Save</button></form>
+<form method="post" action="/admin/plans/delete" onsubmit="return confirm('Delete? Its students and lessons move to the lowest other plan.')">{{ csrf() }}<input type="hidden" name="id" value="{{ p.id }}"><button class="b d">Delete</button></form></td>
+{% else %}<td>{{ p.name }}</td><td>{{ p.price }}</td><td>{{ p.rank_no }}</td><td></td>{% endif %}</tr>{% endfor %}</table></div>
+{% if can_edit %}<div class="p"><h3>Add a plan</h3><form method="post" action="/admin/plans/add" class="r">{{ csrf() }}<input name="name" placeholder="Plan name" required><input name="price" type="number" min="0" value="0"><input name="rank_no" type="number" min="1" value="{{ plans|length + 1 }}"><button class="b">Add plan</button></form></div>{% endif %}
+
+{% else %}
+<div class="p" style="max-width:420px"><h3>Change your password</h3><form method="post">{{ csrf() }}<label>Current password</label><input name="old" type="password" required><label>New password (6+ characters)</label><input name="new" type="password" required><br><br><button class="b">Update password</button></form></div>
+{% endif %}</main></div></body></html>

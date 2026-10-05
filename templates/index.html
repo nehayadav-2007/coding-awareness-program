@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <div class="pill">✨ Learn • Play • Create</div>
+    <h1>Become a <span>Young Coder!</span> 🚀</h1>
+    <p>Learn coding basics through fun lessons, quizzes and simple challenges made for school students.</p>
+    <div class="actions">
+      <a class="btn primary" href="{{ url_for('register') }}">Start Learning <i class="fa-solid fa-arrow-right"></i></a>
+      <a class="btn secondary" href="{{ url_for('login') }}">I have an account</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="mascot">🤖</div>
+    <h3>Ready for your first mission?</h3>
+    <p>Learn a concept → take a quiz → earn points ⭐</p>
+  </div>
+</section>
+<section class="features">
+  <div class="feature"><div>🧩</div><h3>Easy Lessons</h3><p>Short and simple coding concepts.</p></div>
+  <div class="feature"><div>🎯</div><h3>Fun Quizzes</h3><p>Test your knowledge and earn points.</p></div>
+  <div class="feature"><div>🏆</div><h3>Track Progress</h3><p>See what you have completed.</p></div>
+</section>
+{% endblock %}

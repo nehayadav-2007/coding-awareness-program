@@ -1,0 +1,21 @@
+{% extends "base.html" %} 
+{% block content %} 
+<div class="content-card"> 
+<h1>Plans</h1> 
+<p>Higher plans include everything in the plans below them. This is a demo checkout, so no real payment is taken.</p> 
+{% if request.args.get('need') %}<p><b>That lesson needs a higher plan. Choose one below.</b></p>{% endif %} 
+{% if request.args.get('changed') %}<p><b>Plan changed to {{ request.args.get('changed') }}.</b></p>{% endif %} 
+</div> 
+<div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px"> 
+{% for p in rows %} 
+<div class="content-card" style="flex:1;min-width:220px"> 
+<h2>{{ p.name }}</h2> 
+<p><b>{{ 'Rs %d/month' % p.price if p.price else 'Free' }}</b></p> 
+<p>{{ p.n }} lessons at this level</p> 
+{% if u.plan_id == p.id %}<p><b>Your plan</b></p>{% if u.plan_expires %}<p>Ends {{ u.plan_expires }}</p>{% endif %} 
+{% else %}<form method="post" action="/plans/choose/{{ p.id }}"><input type="hidden" name="_t" value="{{ t }}"><button class="btn primary">Choose {{ p.name }}</button></form>{% endif %} 
+</div> 
+{% endfor %} 
+</div> 
+<a class="text-link" href="{{ url_for('lessons') }}">← Back to lessons</a> 
+{% endblock %} 

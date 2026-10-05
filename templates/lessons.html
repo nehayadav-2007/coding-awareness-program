@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><div class="pill">📚 Learning Zone</div><h1>Choose a Lesson</h1><p>Start with the basics and level up.</p></div></div>
+<div class="lesson-grid">
+{% for item in lessons %}
+<a class="lesson-card" href="{{ url_for('lesson', lesson_id=item.id) }}">
+<div class="lesson-icon">{{ item.icon }}</div>
+<div><span class="level">{{ item.level }}</span><h2>{{ item.title }}</h2><p>{{ item.description }}</p></div>
+<div class="status">{{ '✅ Completed' if item.status == 'completed' else 'Start →' }}</div>
+</a>
+{% endfor %}
+</div>
+{% endblock %}

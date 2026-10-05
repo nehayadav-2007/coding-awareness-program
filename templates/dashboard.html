@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><div class="pill">👋 Hi, {{ session.user_name }}!</div><h1>Your Coding Mission</h1><p>Pick a challenge and keep learning.</p></div></div>
+<section class="stats">
+<div class="stat"><span>📚</span><b>{{ total_lessons }}</b><small>Total Lessons</small></div>
+<div class="stat"><span>✅</span><b>{{ completed }}</b><small>Completed</small></div>
+<div class="stat"><span>⭐</span><b>{{ points }}</b><small>Quiz Points</small></div>
+</section>
+<section class="dashboard-grid">
+<a class="dash-card blue" href="{{ url_for('lessons') }}"><span>📚</span><h2>Learn Coding</h2><p>Explore beginner-friendly lessons.</p><b>Start →</b></a>
+<a class="dash-card purple" href="{{ url_for('quiz') }}"><span>🧠</span><h2>Take Quiz</h2><p>Challenge your coding knowledge.</p><b>Play →</b></a>
+<a class="dash-card yellow" href="{{ url_for('progress') }}"><span>🏆</span><h2>My Progress</h2><p>Check completed lessons and scores.</p><b>View →</b></a>
+</section>
+{% endblock %}
