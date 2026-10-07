@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from datetime import date
 from mysql.connector import Error
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -154,20 +155,56 @@ def dashboard():
 def lessons():
     if "user_id" not in session:
         return redirect(url_for("login"))
+
     db = get_db()
     cur = db.cursor(dictionary=True)
+
+    # Get current user's plan information
     cur.execute("""
-        SELECT l.*, COALESCE(p.status,'not_started') AS status
+        SELECT u.status, u.plan_id, u.plan_expires, p.rank_no AS user_rank
+        FROM users u
+        LEFT JOIN plans p ON u.plan_id = p.id
+        WHERE u.id = %s
+    """, (session["user_id"],))
+
+    user = cur.fetchone()
+
+    if not user or user["status"] != "active":
+        cur.close()
+        db.close()
+        return redirect(url_for("login"))
+
+    # Get all lessons and their plan rank
+    cur.execute("""
+        SELECT l.*,
+               COALESCE(pr.status, 'not_started') AS status,
+               lp.rank_no AS lesson_rank
         FROM lessons l
-        LEFT JOIN progress p ON l.id=p.lesson_id AND p.user_id=%s
+        LEFT JOIN progress pr
+            ON l.id = pr.lesson_id
+            AND pr.user_id = %s
+        LEFT JOIN plans lp
+            ON l.plan_id = lp.id
         ORDER BY l.id
     """, (session["user_id"],))
-    data = cur.fetchall()
-    cur.close(); db.close()
-    for l in data:                      # lets lessons.html show a lock: {% if l.locked %}
-        l["locked"] = not lesson_allowed(session["user_id"], l)
-    return render_template("lessons.html", lessons=data)
 
+    data = cur.fetchall()
+
+    # If user's plan has expired, use the lowest plan
+    user_rank = user["user_rank"] or 0
+
+    if user["plan_expires"] and user["plan_expires"] < date.today():
+        cur.execute("SELECT MIN(rank_no) AS min_rank FROM plans")
+        lowest = cur.fetchone()
+        user_rank = lowest["min_rank"] or 0
+
+    for lesson in data:
+        lesson["locked"] = user_rank < (lesson["lesson_rank"] or 0)
+
+    cur.close()
+    db.close()
+
+    return render_template("lessons.html", lessons=data)
 @app.route("/lesson/<int:lesson_id>", methods=["GET", "POST"])
 def lesson(lesson_id):
     if "user_id" not in session:
@@ -175,28 +212,73 @@ def lesson(lesson_id):
 
     db = get_db()
     cur = db.cursor(dictionary=True)
-    cur.execute("SELECT * FROM lessons WHERE id=%s", (lesson_id,))
+
+    # Get current user's plan
+    cur.execute("""
+        SELECT u.status, u.plan_id, u.plan_expires,
+               COALESCE(p.rank_no, 1) AS user_rank
+        FROM users u
+        LEFT JOIN plans p ON u.plan_id = p.id
+        WHERE u.id = %s
+    """, (session["user_id"],))
+
+    user = cur.fetchone()
+
+    if not user or user["status"] != "active":
+        cur.close()
+        db.close()
+        return redirect(url_for("login"))
+
+    # Get lesson
+    cur.execute("""
+        SELECT l.*, COALESCE(p.rank_no, 1) AS lesson_rank
+        FROM lessons l
+        LEFT JOIN plans p ON l.plan_id = p.id
+        WHERE l.id = %s
+    """, (lesson_id,))
+
     item = cur.fetchone()
 
     if not item:
-        cur.close(); db.close()
+        cur.close()
+        db.close()
         return "Lesson not found", 404
 
-    if not lesson_allowed(session["user_id"], item):    # plan / blocked check
-        cur.close(); db.close()
+    # Check expired plan
+    user_rank = user["user_rank"] or 1
+
+    if user["plan_expires"] and user["plan_expires"] < date.today():
+        cur.execute("SELECT MIN(rank_no) AS min_rank FROM plans")
+        lowest = cur.fetchone()
+        user_rank = lowest["min_rank"] or 1
+
+    # Check lesson access
+    lesson_rank = item["lesson_rank"] or 1
+
+    if user_rank < lesson_rank:
+        cur.close()
+        db.close()
         return redirect("/plans?need=1")
 
+    # Mark lesson completed
     if request.method == "POST":
         cur.execute("""
             INSERT INTO progress(user_id, lesson_id, status)
-            VALUES(%s,%s,'completed')
-            ON DUPLICATE KEY UPDATE status='completed', completed_at=CURRENT_TIMESTAMP
+            VALUES(%s, %s, 'completed')
+            ON DUPLICATE KEY UPDATE
+                status='completed',
+                completed_at=CURRENT_TIMESTAMP
         """, (session["user_id"], lesson_id))
+
         db.commit()
-        cur.close(); db.close()
+        cur.close()
+        db.close()
+
         return redirect(url_for("lessons"))
 
-    cur.close(); db.close()
+    cur.close()
+    db.close()
+
     return render_template("lesson.html", lesson=item)
 
 @app.route("/quiz", methods=["GET", "POST"])
