@@ -14,6 +14,7 @@ app.register_blueprint(admin_bp)
 def index():
     return render_template("index.html")
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
