@@ -50,6 +50,8 @@ def login():
         password = request.form["password"]
 
         db = get_db()
+        db.ping(reconnect=True, attempts=3, delay=2)
+
         cur = db.cursor(dictionary=True)
         cur.execute("SELECT * FROM users WHERE email=%s", (email,))
         user = cur.fetchone()
