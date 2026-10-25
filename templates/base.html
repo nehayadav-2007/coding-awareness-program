@@ -19,14 +19,10 @@
       <a href="{{ url_for('quiz') }}">Quiz</a>
       <a href="{{ url_for('progress') }}">Progress</a>
 
-      {% if session.get('role') in ['admin', 'editor', 'support'] %}
-        <a href="{{ url_for('admin.dash') }}" title="Admin Dashboard" aria-label="Admin Dashboard">
-          <i class="fa-solid fa-gauge-high"></i>
-        </a>
-      {% endif %}
-      <span style="color:red; font-size:12px;">
-  ROLE: {{ session.get('role', 'none') }}
-</span>
+      
+{% if session.get('role') in ['admin', 'editor', 'support'] %}
+  <a href="{{ url_for('admin.dash') }}">Admin Panel</a>
+{% endif %}
 
       <a class="logout" href="{{ url_for('logout') }}">Logout</a>
     {% else %}
